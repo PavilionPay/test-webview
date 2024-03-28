@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Deposit Transaction</title>
+</head>
+
+<body>
+    <label for="baseUrl">Base URL:</label><br />
+    <input type="text" id="baseUrl" name="baseUrl"
+        value="https://dev.api-gaming.paviliononline.io/sdk?mode=deposit" /><br />
+    <label for="sessionId">Session Id:</label><br />
+    <input type="text" id="sessionId" name="sessionId" /><br />
+    <label for="redirectUrl">Plaid Redirect URL:</label><br />
+    <input type="text" id="redirectUrl" name="redirectUrl" /><br />
+    <label for="depositAmount">Deposit Amount:</label><br />
+    <input type="text" id="depositAmount" name="depositAmount" /><br />
+    <br />
+    <button onclick="LaunchSDK()">Launch SDK</button>
+    <script>
+        function LaunchSDK() {
+            var baseUrl = document.getElementById("baseUrl").value;
+            var sessionId = document.getElementById("sessionId").value;
+            var redirectUrl = document.getElementById("redirectUrl").value;
+            const apiUrl =
+                "https://dev.api-gaming.paviliononline.io/sdk/api/patronsession/existing";
+            const token =
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc2NTk0NTQsImV4cCI6MTcyOTE5NTQ1NCwiaWF0IjoxNjk3NjU5NDU0LCJpc3MiOiJmNzJhYWE3Ny1iY2NiLTQ5MjUtOGE3YS0xMTBlNjE4YjY0YjQiLCJhdWQiOiJ2aXAtYXBpLWRldiJ9.BEldx3rGvovbnYENIboU_DPGpwrJmRBIomtI4ph5oqQ";
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc2NTk0NTQsImV4cCI6MTcyOTE5NTQ1NCwiaWF0IjoxNjk3NjU5NDU0LCJpc3MiOiJmNzJhYWE3Ny1iY2NiLTQ5MjUtOGE3YS0xMTBlNjE4YjY0YjQiLCJhdWQiOiJ2aXAtYXBpLWRldiJ9.BEldx3rGvovbnYENIboU_DPGpwrJmRBIomtI4ph5oqQ',
+                },
+                body: JSON.stringify({
+                    PatronId: "1ef56720-47b6-46bc-9a3a-b11bd511d10b",
+                    VipCardNumber: "7210908875",
+                    DateOfBirth: "11/13/1994",
+                    remainingDailyDeposit: "5000",
+                    walletBalance: "24",
+                    transactionId: "BP12sd499914347",
+                    transactionAmount: document.getElementById("depositAmount").value,
+                    transactionType: "deposit",
+                    productType: 0,
+                }),
+            };
+
+            window.fetch(apiUrl, requestOptions)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error("Error");
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    var result = JSON.stringify(data, null, 2);
+                    console.log(result);
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                });
+
+            //https://dev.api-gaming.paviliononline.io/sdk?mode=deposit#a73894d1-f89e-453c-9d84-ca402d73438b
+            var url = baseUrl + "#" + sessionId;
+            if (redirectUrl != null && redirectUrl != "") {
+                url = baseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
+            }
+
+            //window.location.href = url;
+        }
+    </script>
+</body>
+
+</html>
