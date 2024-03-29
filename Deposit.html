@@ -1,14 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
     <title>Deposit Transaction</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
-    <label for="baseUrl">Base URL:</label><br />
-    <input type="text" id="baseUrl" name="baseUrl"
+    <label for="sdkBaseUrl">SDK Base URL:</label><br />
+    <input type="text" id="sdkBaseUrl" name="sdkBaseUrl"
         value="https://dev.api-gaming.paviliononline.io/sdk?mode=deposit" /><br />
+    <label for="apiBaseUrl">API Base URL:</label><br />
+    <input type="text" id="apiBaseUrl" name="apiBaseUrl"
+        value="https://dev.api-gaming.paviliononline.io/sdk/api/patronsession/existing" /><br />
     <label for="sessionId">Session Id:</label><br />
     <input type="text" id="sessionId" name="sessionId" /><br />
     <label for="redirectUrl">Plaid Redirect URL:</label><br />
@@ -16,23 +21,40 @@
     <label for="depositAmount">Deposit Amount:</label><br />
     <input type="text" id="depositAmount" name="depositAmount" /><br />
     <br />
-    <button onclick="LaunchSDK()">Launch SDK</button>
+    <button type="button" onclick="LaunchSDK()">Launch SDK</button>
+    <button type="button" onclick="CreateSessionAndLaunchSDK()">
+        Create Session & Launch SDK
+    </button>
     <script>
         function LaunchSDK() {
-            var baseUrl = document.getElementById("baseUrl").value;
+            var sdkBaseUrl = document.getElementById("sdkBaseUrl").value;
             var sessionId = document.getElementById("sessionId").value;
             var redirectUrl = document.getElementById("redirectUrl").value;
-            const apiUrl =
-                "https://dev.api-gaming.paviliononline.io/sdk/api/patronsession/existing";
+
+            //https://dev.api-gaming.paviliononline.io/sdk?mode=deposit#a73894d1-f89e-453c-9d84-ca402d73438b
+            var url = sdkBaseUrl + "#" + sessionId;
+            if (redirectUrl != null && redirectUrl != "") {
+                url = sdkBaseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
+            }
+
+            window.location.href = url;
+        }
+
+        function CreateSessionAndLaunchSDK() {
+            var sdkBaseUrl = document.getElementById("sdkBaseUrl").value;
+            var sessionId = document.getElementById("sessionId").value;
+            var redirectUrl = document.getElementById("redirectUrl").value;
+            var apiBaseUrl = document.getElementById("apiBaseUrl").value;
             const token =
                 "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc2NTk0NTQsImV4cCI6MTcyOTE5NTQ1NCwiaWF0IjoxNjk3NjU5NDU0LCJpc3MiOiJmNzJhYWE3Ny1iY2NiLTQ5MjUtOGE3YS0xMTBlNjE4YjY0YjQiLCJhdWQiOiJ2aXAtYXBpLWRldiJ9.BEldx3rGvovbnYENIboU_DPGpwrJmRBIomtI4ph5oqQ";
             const requestOptions = {
                 method: "POST",
                 headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc2NTk0NTQsImV4cCI6MTcyOTE5NTQ1NCwiaWF0IjoxNjk3NjU5NDU0LCJpc3MiOiJmNzJhYWE3Ny1iY2NiLTQ5MjUtOGE3YS0xMTBlNjE4YjY0YjQiLCJhdWQiOiJ2aXAtYXBpLWRldiJ9.BEldx3rGvovbnYENIboU_DPGpwrJmRBIomtI4ph5oqQ',
+                    "Access-Control-Allow-Origin": "*",
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Authorization:
+                        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYmYiOjE2OTc2NTk0NTQsImV4cCI6MTcyOTE5NTQ1NCwiaWF0IjoxNjk3NjU5NDU0LCJpc3MiOiJmNzJhYWE3Ny1iY2NiLTQ5MjUtOGE3YS0xMTBlNjE4YjY0YjQiLCJhdWQiOiJ2aXAtYXBpLWRldiJ9.BEldx3rGvovbnYENIboU_DPGpwrJmRBIomtI4ph5oqQ",
                 },
                 body: JSON.stringify({
                     PatronId: "1ef56720-47b6-46bc-9a3a-b11bd511d10b",
@@ -47,7 +69,8 @@
                 }),
             };
 
-            window.fetch(apiUrl, requestOptions)
+            window
+                .fetch(apiBaseUrl, requestOptions)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Error");
@@ -57,18 +80,19 @@
                 .then((data) => {
                     var result = JSON.stringify(data, null, 2);
                     console.log(result);
+                    sessionId = result.sessionId;
                 })
                 .catch((error) => {
                     console.error("Error:", error);
                 });
 
             //https://dev.api-gaming.paviliononline.io/sdk?mode=deposit#a73894d1-f89e-453c-9d84-ca402d73438b
-            var url = baseUrl + "#" + sessionId;
+            var url = sdkBaseUrl + "#" + sessionId;
             if (redirectUrl != null && redirectUrl != "") {
-                url = baseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
+                url = sdkBaseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
             }
 
-            //window.location.href = url;
+            window.location.href = url;
         }
     </script>
 </body>
