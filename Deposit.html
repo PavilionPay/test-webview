@@ -81,18 +81,19 @@
                     var result = JSON.stringify(data, null, 2);
                     console.log(result);
                     sessionId = result.sessionId;
+                    //https://dev.api-gaming.paviliononline.io/sdk?mode=deposit#a73894d1-f89e-453c-9d84-ca402d73438b
+                    var url = sdkBaseUrl + "#" + sessionId;
+                    if (redirectUrl != null && redirectUrl != "") {
+                        url = sdkBaseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
+                    }
+
+                    window.location.href = url;
                 })
                 .catch((error) => {
                     console.error("Error:", error);
                 });
 
-            //https://dev.api-gaming.paviliononline.io/sdk?mode=deposit#a73894d1-f89e-453c-9d84-ca402d73438b
-            var url = sdkBaseUrl + "#" + sessionId;
-            if (redirectUrl != null && redirectUrl != "") {
-                url = sdkBaseUrl + "&redirectUrl=" + redirectUrl + "#" + sessionId;
-            }
 
-            window.location.href = url;
         }
     </script>
 </body>
